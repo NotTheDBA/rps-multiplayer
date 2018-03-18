@@ -5,15 +5,21 @@ A rock-paper-scissors multiplayer web realtime game. (class)
 
 In this assignment, you'll indeed create another Rock Paper Scissors game. The catch? You're going to make this an online multiplayer game, all with the help of Firebase (and the rest of your web development repertoire)!
 
-### Setup
 
-~~1. Create a GitHub repo called `RPS-Multiplayer` and clone it to your computer.~~
-
-~~2. Create a file inside of your `RPS-Multiplayer` folder called `index.html`. This is where your page's HTML will go.~~
-~~3. Don't forget to include [jQuery](https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js) and [Firebase](https://www.gstatic.com/firebasejs/live/3.0/firebase.js).~~
-
-~~4. Inside `RPS-Multiplayer`, create your `assets` directory.~~
-~~5. Create the folders and files you typically place in `assets` -- just like you had for the prior weeks' homework assignments.~~
+TODO:
+- User(s) sign in
+- Users choose to join a game
+- Users are matched up
+- Game begins
+- Each user presented RPS buttons
+- User selects RPS button
+- Response is sent back to server
+- Server waits until both responses received ("waiting" state can be sent)
+- Server compares responses
+- Winner declared
+- Score updated
+- Best of 3 wins
+- Winner board tracked
 
 ### Instructions
 
