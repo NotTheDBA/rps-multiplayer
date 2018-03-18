@@ -8,6 +8,7 @@ In this assignment, you'll indeed create another Rock Paper Scissors game. The c
 
 TODO:
 ~~User(s) sign in~~
+- save user ID in the browser...
 - Users choose to join a game
 - Users are matched up
 - Game begins

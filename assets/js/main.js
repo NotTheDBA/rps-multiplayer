@@ -40,7 +40,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         userId = user.uid;
 
         var playerRef = database.ref("players").child(userId);
-        debugger;
+
         playerRef.on('value', function(snapshot) {
 
             var exists = (snapshot.child("started").val() !== null);
@@ -72,6 +72,58 @@ firebase.auth().onAuthStateChanged(function(user) {
     // ...
 });
 
+
+var gameRef = database.ref("game");
+
+gameRef.on('value', function(snapshot) {
+    if (!snapshot.exists()) {
+        return;
+    }
+    // Player joins game
+    var newPlayer = snapshot.child("join").val();
+    if (!snapshot.child("playerOne").exists()) {
+
+        gameRef.child("playerOne").set(newPlayer);
+        gameRef.child("join").remove();
+        console.log("Player One joined: " + newPlayer);
+        return;
+    } else if (snapshot.child("playerOne").val() === newPlayer) {
+
+        gameRef.child("join").remove();
+        console.log("Ready Player One.");
+        return;
+    }
+
+    if (!snapshot.child("playerTwo").exists()) {
+
+        gameRef.child("playerTwo").set(newPlayer);
+        gameRef.child("join").remove();
+        console.log("Player Two joined: " + newPlayer);
+        return;
+    } else if (snapshot.child("playerTwo").val() === newPlayer) {
+
+        gameRef.child("join").remove();
+        console.log("Ready Player Two.");
+        return;
+    }
+
+    console.log("New watcher joined: " + newPlayer);
+    gameRef.child("join").remove();
+    return;
+
+});
+
+// Whenever a user clicks the start button
+$("#start").on("click", function(event) {
+    // Prevent form from submitting
+    event.preventDefault();
+    // console.log(userId);
+    // console.log(playerName);
+
+    console.log("start");
+    gameRef.child("join").set(userId);
+
+});
 
 // Whenever a user clicks the submit-bid button
 $("#rock").on("click", function(event) {
