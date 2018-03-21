@@ -28,8 +28,8 @@ $("#register").on("click", function(event) {
     // Prevent form from submitting
     event.preventDefault();
 
-    registeredName = $("#player-name").val();
-    $("#player-name").val("");
+    registeredName = $("#register-name").val();
+    $("#register-name").val("");
 
     firebase.auth().signInAnonymously().catch(function(error) {
         // Handle Errors here.
@@ -64,6 +64,8 @@ firebase.auth().onAuthStateChanged(function(user) {
             } else {
                 console.log("User Exists")
                 playerName = snapshot.child("displayName").val();
+                $("#registration").empty();
+                $("#player-name").text("Welcome " + playerName + "!")
                 nameExists = (playerName !== null && playerName > "");
             }
 
