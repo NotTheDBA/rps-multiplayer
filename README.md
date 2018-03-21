@@ -13,8 +13,8 @@ TODO:
 - ~~Users are matched up~~
 - ~~Game begins~~
 - ~~Each user presented RPS buttons~~
-- User selects RPS button
-- Response is sent back to server
+- ~~User selects RPS button~~
+- ~~Response is sent back to server~~
 - Server waits until both responses received 
     ("waiting" state can be sent)
 - Server compares responses

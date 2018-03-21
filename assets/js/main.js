@@ -10,7 +10,7 @@ var config = {
 firebase.initializeApp(config);
 var database = firebase.database();
 
-var playerId = "";
+var userId = "";
 var playerID = "";
 var playerName = "";
 var playerName = "";
@@ -40,7 +40,7 @@ $("#register").on("click", function(event) {
 
     });
     //this action triggers our player validation check...
-    database.ref("players").child(playerId).child('lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
+    database.ref("players").child(userId).child('lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
 });
 
 //Validate new or existing users
@@ -48,9 +48,9 @@ firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
         // User is signed in.
         var isAnonymous = user.isAnonymous;
-        playerId = user.uid;
+        userId = user.uid;
 
-        var playerRef = database.ref("players").child(playerId);
+        var playerRef = database.ref("players").child(userId);
 
         playerRef.on('value', function(snapshot) {
 
@@ -92,13 +92,94 @@ var gameRef = database.ref("game");
 // var playerJoins = gameRef.child("join");
 // playerJoins.child("player-count").set(0);
 
+
+console.log(userId + "played");
+
+gameRef.on('value', function(snapshot) {
+    // Player joins game
+    if (!snapshot.exists()) {
+        return;
+    }
+
+    var p1, p2;
+    var p1Choice, p2Choice;
+    var p1wins, p2wins;
+
+    if (snapshot.hasChild("playerOne")) {
+        p1 = snapshot.child("playerOne");
+        if (p1.hasChild("choice")) {
+            p1Choice = p1.child("choice").val();
+        }
+        if (p1.hasChild("wins")) {
+            p1wins = p1.child("wins").val();
+        } else {
+            p1wins = 0
+        }
+    }
+
+    if (snapshot.hasChild("playerTwo")) {
+        p2 = snapshot.child("playerTwo");
+        if (p2.hasChild("choice")) {
+            p2Choice = p2.child("choice").val();
+        }
+        if (p2.hasChild("wins")) {
+            p2wins = p2.child("wins").val();
+        } else {
+            p2wins = 0
+        }
+    }
+    if (typeof p1Choice != "undefined") {
+        console.log(p1Choice)
+        console.log(p2Choice)
+        if (p1Choice === p2Choice) {
+            $("#action").text("Tie!  Play again...");
+        }
+        //Rock beats Scissors
+        if (p1Choice === "rock" && p2Choice === "scissors") {
+            $("#action").text("Rock beats Scissors... Player 1 wins");
+            p1wins += 1;
+        }
+        //Scissors beats Paper
+        if (p1Choice === "scissors" && p2Choice === "paper") {
+            $("#action").text("Scissors beats Paper... Player 1 wins");
+            p1wins += 1;
+        }
+        //Paper beats Rock
+        if (p1Choice === "paper" && p2Choice === "rock") {
+            $("#action").text("Paper beats Rock... Player 1 wins");
+            p1wins += 1;
+        }
+
+        //Rock beats Scissors
+        if (p2Choice === "rock" && p1Choice === "scissors") {
+            $("#action").text("Rock beats Scissors... Player 2 wins");
+            p2wins += 1;
+        }
+        //Scissors beats Paper
+        if (p2Choice === "scissors" && p1Choice === "paper") {
+            $("#action").text("Scissors beats Paper... Player 2 wins");
+            p2wins += 1;
+        }
+        //Paper beats Rock
+        if (p2Choice === "paper" && p1Choice === "rock") {
+            $("#action").text("Paper beats Rock... Player 2 wins");
+            p2wins += 1;
+        }
+        gameRef.child("playerOne").child("choice").remove();
+        gameRef.child("playerTwo").child("choice").remove();
+        gameRef.child("playerOne").child("wins").set(p1wins);
+        gameRef.child("playerTwo").child("wins").set(p2wins);
+
+    }
+});
+
 gameRef.child("join").on('value', function(snapshot) {
     // Player joins game
     if (!snapshot.exists()) {
         return;
     }
-    var newPlayer = snapshot.child("playerId").val();
-    if (newPlayer === null || newPlayer !== playerId) {
+    var newPlayer = snapshot.child("userId").val();
+    if (newPlayer === null || newPlayer !== userId) {
         // something other than player joining...
         // OR player joined is someone else - we don't both need to process
         return;
@@ -109,23 +190,23 @@ gameRef.child("join").on('value', function(snapshot) {
             // gameRef.child("playerOne").set(newPlayer);
             playerID = "playerOne";
         } else {
-            console.log(snapshot.child("playerOne").child("playerId"))
-            console.log(newPlayer)
-            if (snapshot.child("playerOne").child("playerId").val() === newPlayer) {
+            // console.log(snapshot.child("playerOne").child("userId"))
+            // console.log(newPlayer)
+            if (snapshot.child("playerOne").child("userId").val() === newPlayer) {
                 playerID = "playerOne";
             } else {
 
-                console.log("Player One already exists");
+                // console.log("Player One already exists");
 
                 if (!snapshot.hasChild("playerTwo")) {
 
                     // gameRef.child("playerTwo").set(newPlayer);
                     playerID = "playerTwo";
                 } else {
-                    if (snapshot.child("playerTwo").child("playerId").val() === newPlayer) {
+                    if (snapshot.child("playerTwo").child("userId").val() === newPlayer) {
                         playerID = "playerTwo";
                     } else {
-                        console.log("Player Two already exists");
+                        // console.log("Player Two already exists");
                         //player is a watcher
                         playerID = "Watcher";
                     }
@@ -133,9 +214,10 @@ gameRef.child("join").on('value', function(snapshot) {
             }
         }
         gameRef.child(playerID).set({
-            playerId
+            userId
         });
-        console.log("Ready " + playerName);
+        console.log("Player joined");
+        // console.log("Ready " + playerName);
         if (playerID !== "Watcher") {
             //activate buttons
             $(".rpsls").attr("disabled", null);
@@ -155,29 +237,31 @@ $("#start").on("click", function(event) {
 
     console.log("start");
 
-    gameRef.child("join").child("playerId").set(playerId);
+    gameRef.child("join").child("userId").set(userId);
 
 });
 
 
 $(".rpsls").on("click", function(event) {
     event.preventDefault();
+
+    // console.log(playerID + " playeD");
     // $(this).val:
     //  rock
     //  paper
     //  scissors
     //  lizard - TBD
     //  spock - TBD
-    // console.log(playerId);
+    // console.log(userId);
     // console.log(playerID);
     // console.log($(this).val());
     gameRef.child(playerID).set({
-        playerId,
+        userId,
 
         choice: $(this).val()
 
     });
 
+    // console.log(gameRef.child("plays").val());
     // gameRef.child(playerID).child("choice").set($(this).val());
-
 });
