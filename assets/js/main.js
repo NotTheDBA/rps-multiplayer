@@ -10,7 +10,7 @@ var config = {
 firebase.initializeApp(config);
 var database = firebase.database();
 
-var userId = "";
+var playerId = "";
 var playerID = "";
 var playerName = "";
 var playerName = "";
@@ -40,7 +40,7 @@ $("#register").on("click", function(event) {
 
     });
     //this action triggers our player validation check...
-    database.ref("players").child(userId).child('lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
+    database.ref("players").child(playerId).child('lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
 });
 
 //Validate new or existing users
@@ -48,9 +48,9 @@ firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
         // User is signed in.
         var isAnonymous = user.isAnonymous;
-        userId = user.uid;
+        playerId = user.uid;
 
-        var playerRef = database.ref("players").child(userId);
+        var playerRef = database.ref("players").child(playerId);
 
         playerRef.on('value', function(snapshot) {
 
@@ -92,51 +92,37 @@ var gameRef = database.ref("game");
 // var playerJoins = gameRef.child("join");
 // playerJoins.child("player-count").set(0);
 
-// playerJoins.on('value', function(snapshot) {
 gameRef.child("join").on('value', function(snapshot) {
     // Player joins game
     if (!snapshot.exists()) {
         return;
     }
-    var newPlayer = snapshot.child("id").val();
-    if (newPlayer === null || newPlayer !== userId) {
+    var newPlayer = snapshot.child("playerId").val();
+    if (newPlayer === null || newPlayer !== playerId) {
         // something other than player joining...
         // OR player joined is someone else - we don't both need to process
         return;
     }
-    // var playerCount = snapshot.child("player-count").val();
-    // console.log(gameRef.child("playerOne"));
-
-    // console.log(playerCount);
-
-
-    // var p1Ref = gameRef.child("playerOne");
-
-    // p1Ref.once('value', function(snapshot) {
-    //     if (!snapshot.hasChild("playerOne")) {
-    //         gameRef.child("playerOne").set(newPlayer);
-    //         gameRef.child("join").remove();
-    //     } else {
-    //         alert("Player One already exists");
-    //     }
-    // });
 
     gameRef.once('value', function(snapshot) {
         if (!snapshot.hasChild("playerOne")) {
-            gameRef.child("playerOne").set(newPlayer);
+            // gameRef.child("playerOne").set(newPlayer);
             playerID = "playerOne";
         } else {
-            if (snapshot.child("playerOne").val() === newPlayer) {
+            console.log(snapshot.child("playerOne").child("playerId"))
+            console.log(newPlayer)
+            if (snapshot.child("playerOne").child("playerId").val() === newPlayer) {
                 playerID = "playerOne";
             } else {
 
                 console.log("Player One already exists");
 
                 if (!snapshot.hasChild("playerTwo")) {
-                    gameRef.child("playerTwo").set(newPlayer);
+
+                    // gameRef.child("playerTwo").set(newPlayer);
                     playerID = "playerTwo";
                 } else {
-                    if (snapshot.child("playerTwo").val() === newPlayer) {
+                    if (snapshot.child("playerTwo").child("playerId").val() === newPlayer) {
                         playerID = "playerTwo";
                     } else {
                         console.log("Player Two already exists");
@@ -146,6 +132,9 @@ gameRef.child("join").on('value', function(snapshot) {
                 }
             }
         }
+        gameRef.child(playerID).set({
+            playerId
+        });
         console.log("Ready " + playerName);
         if (playerID !== "Watcher") {
             //activate buttons
@@ -157,105 +146,7 @@ gameRef.child("join").on('value', function(snapshot) {
         gameRef.child("join").remove();
     });
 
-    // if (playerCount === 0) {
-
-    // if (!gameRef.childexists().equalTo("playerOne")) {
-    //     // if (!p1Ref.exists()) {
-
-    //     //     // // gameRef.child("playerOne").push({
-    //     gameRef.child("playerOne").set({
-    //         id: newPlayer
-    //     });
-    //     //     // playerID = "playerOne";
-    //     //     // if (snapshot.child("join").exists()) {
-    //     //     gameRef.child("join").remove();
-    //     //     // }
-    //     console.log("Player One joined: " + newPlayer);
-    //     //     return;
-    // }
-    //  else if (p1Ref.child("id") === newPlayer) {
-
-    //     // playerID = "playerOne";
-    //     if (snapshot.child("join").exists()) {
-    //         gameRef.child("join").remove();
-    //     }
-    //     console.log("Ready Player One.");
-    //     return;
-    // }
-
 });
-
-// gameRef.on('value', function(snapshot) {
-//     if (!snapshot.exists()) {
-//         return;
-//     }
-//     var p1Ref = snapshot.child("playerOne");
-//     var p2Ref = snapshot.child("playerTwo");
-//     if (p1Ref.exists()) {
-//         console.log("playerOne exists.")
-//     }
-//     if (snapshot.child("playerTwo").exists()) {
-//         console.log("playerTwo exists.")
-//     }
-
-//     // Player joins game
-//     var newPlayer = snapshot.child("join").val();
-//     // debugger;
-//     if (newPlayer === null) {
-//         return;
-//     }
-//     // if (!gameRef.child("playerOne").exists()) {
-//     if (!p1Ref.exists()) {
-
-//         // // gameRef.child("playerOne").push({
-//         // gameRef.child("playerOne").set({
-//         //     id: newPlayer
-//         // });
-//         // playerID = "playerOne";
-//         // if (snapshot.child("join").exists()) {
-//         gameRef.child("join").remove();
-//         // }
-//         console.log("Player One joined: " + newPlayer);
-//         return;
-//     } else if (p1Ref.child("id") === newPlayer) {
-
-//         // playerID = "playerOne";
-//         if (snapshot.child("join").exists()) {
-//             gameRef.child("join").remove();
-//         }
-//         console.log("Ready Player One.");
-//         return;
-//     }
-
-//     // // if (!gameRef.child("playerTwo").exists()) {
-//     // if (!p2Ref.exists()) {
-
-//     //     gameRef.child("playerTwo").set({
-//     //         id: newPlayer
-//     //     });
-//     //     playerID = "playerTwo";
-//     //     if (snapshot.child("join").exists()) {
-//     //         gameRef.child("join").remove();
-//     //     }
-//     //     console.log("Player Two joined: " + newPlayer);
-//     //     return;
-//     // } else if (p2Ref.child("id") === newPlayer) {
-
-//     //     playerID = "playerTwo";
-//     //     if (snapshot.child("join").exists()) {
-//     //         gameRef.child("join").remove();
-//     //     }
-//     //     console.log("Ready Player Two.");
-//     //     return;
-//     // }
-
-//     // console.log("New watcher joined: " + newPlayer);
-//     // if (snapshot.child("join").exists()) {
-//     //     gameRef.child("join").remove();
-//     // }
-//     // return;
-
-// });
 
 // Whenever a user clicks the start button
 $("#start").on("click", function(event) {
@@ -264,7 +155,7 @@ $("#start").on("click", function(event) {
 
     console.log("start");
 
-    gameRef.child("join").child("id").set(userId);
+    gameRef.child("join").child("playerId").set(playerId);
 
 });
 
@@ -277,11 +168,14 @@ $(".rpsls").on("click", function(event) {
     //  scissors
     //  lizard - TBD
     //  spock - TBD
-    console.log(userId);
-    console.log(playerID);
-    console.log($(this).val());
+    // console.log(playerId);
+    // console.log(playerID);
+    // console.log($(this).val());
     gameRef.child(playerID).set({
+        playerId,
+
         choice: $(this).val()
+
     });
 
     // gameRef.child(playerID).child("choice").set($(this).val());

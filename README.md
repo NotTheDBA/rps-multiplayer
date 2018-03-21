@@ -7,12 +7,12 @@ In this assignment, you'll indeed create another Rock Paper Scissors game. The c
 
 
 TODO:
-~~User(s) sign in~~
+- ~~User(s) sign in~~
 - save user ID in the browser...
-- Users choose to join a game
-- Users are matched up
-- Game begins
-- Each user presented RPS buttons
+- ~~Users choose to join a game~~
+- ~~Users are matched up~~
+- ~~Game begins~~
+- ~~Each user presented RPS buttons~~
 - User selects RPS button
 - Response is sent back to server
 - Server waits until both responses received 
