@@ -13,6 +13,7 @@ var database = firebase.database();
 var userId = "";
 var playerID = "";
 var playerName = "";
+var playerName = "";
 var registeredName = "";
 
 gameSetup();
@@ -64,7 +65,7 @@ firebase.auth().onAuthStateChanged(function(user) {
             } else {
                 console.log("User Exists")
                 playerName = snapshot.child("displayName").val();
-                $("#registration").empty();
+                // $("#registration").empty();
                 $("#player-name").text("Welcome " + playerName + "!")
                 nameExists = (playerName !== null && playerName > "");
             }
@@ -123,20 +124,20 @@ gameRef.child("join").on('value', function(snapshot) {
     gameRef.once('value', function(snapshot) {
         if (!snapshot.hasChild("playerOne")) {
             gameRef.child("playerOne").set(newPlayer);
-            playerID = "Player One";
+            playerID = "playerOne";
         } else {
             if (snapshot.child("playerOne").val() === newPlayer) {
-                playerID = "Player One";
+                playerID = "playerOne";
             } else {
 
                 console.log("Player One already exists");
 
                 if (!snapshot.hasChild("playerTwo")) {
                     gameRef.child("playerTwo").set(newPlayer);
-                    playerID = "Player Two";
+                    playerID = "playerTwo";
                 } else {
                     if (snapshot.child("playerTwo").val() === newPlayer) {
-                        playerID = "Player Two";
+                        playerID = "playerTwo";
                     } else {
                         console.log("Player Two already exists");
                         //player is a watcher
@@ -145,7 +146,7 @@ gameRef.child("join").on('value', function(snapshot) {
                 }
             }
         }
-        console.log("Ready " + playerID);
+        console.log("Ready " + playerName);
         if (playerID !== "Watcher") {
             //activate buttons
             $(".rpsls").attr("disabled", null);
