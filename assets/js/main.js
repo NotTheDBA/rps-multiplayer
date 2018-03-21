@@ -15,6 +15,14 @@ var playerID = "";
 var playerName = "";
 var registeredName = "";
 
+gameSetup();
+
+function gameSetup() {
+    //deactivate play buttons until start buttons
+    $(".rpsls").attr("disabled", true);
+}
+
+
 // Whenever a user clicks the register button
 $("#register").on("click", function(event) {
     // Prevent form from submitting
@@ -77,19 +85,20 @@ firebase.auth().onAuthStateChanged(function(user) {
 // push "child added"
 
 var gameRef = database.ref("game");
-var gamePlayerRef = gameRef.child("players");
 
-var playerJoins = gameRef.child("join");
+// var playerJoins = gameRef.child("join");
 // playerJoins.child("player-count").set(0);
 
-
-playerJoins.on('value', function(snapshot) {
+// playerJoins.on('value', function(snapshot) {
+gameRef.child("join").on('value', function(snapshot) {
     // Player joins game
     if (!snapshot.exists()) {
         return;
     }
     var newPlayer = snapshot.child("id").val();
-    if (newPlayer === null) {
+    if (newPlayer === null || newPlayer !== userId) {
+        // something other than player joining...
+        // OR player joined is someone else - we don't both need to process
         return;
     }
     // var playerCount = snapshot.child("player-count").val();
@@ -111,15 +120,36 @@ playerJoins.on('value', function(snapshot) {
 
     gameRef.once('value', function(snapshot) {
         if (!snapshot.hasChild("playerOne")) {
-            console.log("Player One already exists");
             gameRef.child("playerOne").set(newPlayer);
+            playerID = "Player One";
         } else {
-            console.log("Player One already exists");
-            if (!snapshot.hasChild("playerTwo") && snapshot.child("playerOne").val() !== newPlayer) {
-                gameRef.child("playerTwo").set(newPlayer);
+            if (snapshot.child("playerOne").val() === newPlayer) {
+                playerID = "Player One";
             } else {
-                console.log("Player Two already exists");
+
+                console.log("Player One already exists");
+
+                if (!snapshot.hasChild("playerTwo")) {
+                    gameRef.child("playerTwo").set(newPlayer);
+                    playerID = "Player Two";
+                } else {
+                    if (snapshot.child("playerTwo").val() === newPlayer) {
+                        playerID = "Player Two";
+                    } else {
+                        console.log("Player Two already exists");
+                        //player is a watcher
+                        playerID = "Watcher";
+                    }
+                }
             }
+        }
+        console.log("Ready " + playerID);
+        if (playerID !== "Watcher") {
+            //activate buttons
+            $(".rpsls").attr("disabled", null);
+        } else {
+            //deactivate buttons
+            $(".rpsls").attr("disabled", true);
         }
         gameRef.child("join").remove();
     });
@@ -151,16 +181,6 @@ playerJoins.on('value', function(snapshot) {
     // }
 
 });
-
-// gamePlayerRef.on('value', function(snapshot) {
-//     if (!snapshot.exists()) {
-//         return;
-//     }
-
-//     playerCount = snapshot.val();
-//     console.log(playerCount);
-
-// });
 
 // gameRef.on('value', function(snapshot) {
 //     if (!snapshot.exists()) {
@@ -238,20 +258,22 @@ playerJoins.on('value', function(snapshot) {
 $("#start").on("click", function(event) {
     // Prevent form from submitting
     event.preventDefault();
-    // console.log(userId);
-    // console.log(playerName);
 
     console.log("start");
-    // debugger;
-    playerJoins.child("id").set(userId);
+
+    gameRef.child("join").child("id").set(userId);
 
 });
 
 
 $(".rpsls").on("click", function(event) {
-    // Prevent form from submitting
     event.preventDefault();
-    // gameRef.child("choice").set($(this).val());
+    // $(this).val:
+    //  rock
+    //  paper
+    //  scissors
+    //  lizard - TBD
+    //  spock - TBD
     console.log(userId);
     console.log(playerID);
     console.log($(this).val());
@@ -262,39 +284,3 @@ $(".rpsls").on("click", function(event) {
     // gameRef.child(playerID).child("choice").set($(this).val());
 
 });
-
-// // Whenever a user clicks the submit-bid button
-// $("#rock").on("click", function(event) {
-//     // Prevent form from submitting
-//     event.preventDefault();
-//     console.log(userId);
-//     console.log($(this).val());
-// });
-
-// // Whenever a user clicks the submit-bid button
-// $("#paper").on("click", function(event) {
-//     // Prevent form from submitting
-//     event.preventDefault();
-//     console.log($(this).val());
-// });
-
-// // Whenever a user clicks the submit-bid button
-// $("#scissors").on("click", function(event) {
-//     // Prevent form from submitting
-//     event.preventDefault();
-//     console.log($(this).val());
-// });
-
-// // Whenever a user clicks the submit-bid button
-// $("#lizard").on("click", function(event) {
-//     // Prevent form from submitting
-//     event.preventDefault();
-// console.log($(this).val());
-// });
-
-// // Whenever a user clicks the submit-bid button
-// $("#spock").on("click", function(event) {
-//     // Prevent form from submitting
-//     event.preventDefault();
-// console.log($(this).val());
-// });
