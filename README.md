@@ -22,7 +22,7 @@ A realtime rock-paper-scissors multiplayer web game. (class)
 - ~~Server compares responses~~
 - ~~Winner declared~~
 - ~~Score updated~~
-- Best of 3 wins
+- ~~Best of 3 wins~~
 - Styling
 
 ## Future features:

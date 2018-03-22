@@ -1,0 +1,8 @@
+body {
+    max-width: 50rem;
+}
+
+#alert,
+.jumbotron {
+    text-align: center;
+}

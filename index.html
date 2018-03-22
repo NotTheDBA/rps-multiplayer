@@ -4,22 +4,50 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/main.css" />
+
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery.js"></script> -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
     <!-- Bootstrap -->
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"> -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootlint/0.14.2/bootlint.min.js" integrity="sha384-SLfe/wBrCVfyGjtLhfUmA5cYQLnNVTRmwMUJ11s7x5HxXCKom2oeEwX9bvY74CAs" crossorigin="anonymous"></script>
 
     <!-- LINK TO FIREBASE GOES HERE -->
     <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
-    <!-- Link to Moment.js should go here -->
+
+
+    <!-- Moment.js -->
     <!-- <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script> -->
+
+    <!-- App links go here -->
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/bootstrap-sketchy.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/main.css" />
+    <script type="text/javascript" src="assets/js/main.js"></script>
+
+    <title>R-P-S Live</title>
 </head>
 
 <body>
+    <header>
+        <div class="jumbotron">
+            <h1>R-P-S Live</h1>
+            <h3>Invite your friend, and beat them up!</h3>
+        </div>
+    </header>
+    <section class="container">
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <p id="alert">
+                    <span id="action-prompt"></span>
+                </p>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </section>
+
     <div id="registration">
         <label>Name: 
     <input id="register-name"></label>
@@ -33,7 +61,7 @@
             <button id="start">Fight!</button>
         </p>
         <p>
-            <h1 id="action"></h1>
+            <h1 id="action-prompt"></h1>
         </p>
         <p>
             <button class="rpsls" id="rock" value="rock">Rock</button>
@@ -44,7 +72,5 @@
         </p>
     </div>
 </body>
-
-<script src="assets/js/main.js"></script>
 
 </html>
