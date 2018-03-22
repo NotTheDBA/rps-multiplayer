@@ -9,6 +9,7 @@ A realtime rock-paper-scissors multiplayer web game. (class)
 
   * The game will track each player's wins and losses.
 
+- - -
 ## TODO:
 - ~~User(s) sign in~~
 - ~~Users choose to join a game~~
@@ -31,27 +32,3 @@ A realtime rock-paper-scissors multiplayer web game. (class)
 - Abandoned game tracking
 - Rock-Paper-Scissors-Lizard-Spock!
 - Allow players to register and login in
-
-- - -
-### Instructions
-
-* Create a game that suits this user story:
-
-- - -
-
-### Minimum Requirements
-
-Attempt to complete homework assignment as described in instructions. If unable to complete certain portions, please pseudocode these portions to describe what remains to be completed.
-
-- - -
-
-### Create a README.md
-
-Add a `README.md` to your repository describing the project. Here are some resources for creating your `README.md`. Here are some resources to help you along the way:
-
-* [About READMEs](https://help.github.com/articles/about-readmes/)
-
-* [Mastering Markdown](https://guides.github.com/features/mastering-markdown/)
-- - -
-
-  **Good Luck!**
