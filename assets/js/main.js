@@ -197,40 +197,40 @@ gameRef.on('value', function(snapshot) {
         gameRef.child("playerTwo").child("choice").remove();
 
         if (p1Choice === p2Choice) {
-            $("#action").text("Tie!  Play again...");
+            actionMessage("Tie!  Play again...");
         }
 
         // Player 1 winning scenarios
         // Rock beats Scissors
         if (p1Choice === "rock" && p2Choice === "scissors") {
-            $("#action").text("Rock beats Scissors... Player 1 wins");
+            actionMessage("Rock beats Scissors... Player 1 wins");
             p1wins += 1;
         }
         // Scissors beats Paper
         if (p1Choice === "scissors" && p2Choice === "paper") {
-            $("#action").text("Scissors beats Paper... Player 1 wins");
+            actionMessage("Scissors beats Paper... Player 1 wins");
             p1wins += 1;
         }
         // Paper beats Rock
         if (p1Choice === "paper" && p2Choice === "rock") {
-            $("#action").text("Paper beats Rock... Player 1 wins");
+            actionMessage("Paper beats Rock... Player 1 wins");
             p1wins += 1;
         }
 
         // Player 2 winning scenarios
         // Rock beats Scissors
         if (p2Choice === "rock" && p1Choice === "scissors") {
-            $("#action").text("Rock beats Scissors... Player 2 wins");
+            actionMessage("Rock beats Scissors... Player 2 wins");
             p2wins += 1;
         }
         // Scissors beats Paper
         if (p2Choice === "scissors" && p1Choice === "paper") {
-            $("#action").text("Scissors beats Paper... Player 2 wins");
+            actionMessage("Scissors beats Paper... Player 2 wins");
             p2wins += 1;
         }
         // Paper beats Rock
         if (p2Choice === "paper" && p1Choice === "rock") {
-            $("#action").text("Paper beats Rock... Player 2 wins");
+            actionMessage("Paper beats Rock... Player 2 wins");
             p2wins += 1;
         }
 
@@ -238,8 +238,24 @@ gameRef.on('value', function(snapshot) {
         gameRef.child("playerTwo").update({ wins: p2wins });
 
         if (p1wins >= 3 || p2wins >= 3) {
+            var message = "<strong>GAME OVER!</strong>";
+            var winner = ""
+            var p1wins = ""
+            var p2wins = ""
+                // Add winner to leader board
+            if (p1wins > p2wins) {
+                winner = "Player 1"
+                p1wins = "<strong>" + p1wins + "</strong>"
+            } else {
+                winner = "Player 2"
+                p2wins = "<strong>" + p2wins + "</strong>"
+            }
             // Declare final winner
-            // Add winner to leader board
+            message += "<br>" + winner + " is the final winner!";
+            message += "<br>Player 1 wins: " + p1wins + ""
+            message += "<br>Player 2 wins: " + p2wins + ""
+
+            actionMessage(message);
             // Check who's got next!
         }
 
@@ -249,6 +265,11 @@ gameRef.on('value', function(snapshot) {
     }
 
 });
+
+function actionMessage(message) {
+
+    $("#action").text(message);
+}
 
 // Whenever a user clicks the "Fight" button
 $("#start").on("click", function(event) {
