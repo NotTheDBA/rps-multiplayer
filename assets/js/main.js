@@ -20,28 +20,14 @@ gameSetup();
 
 function gameSetup() {
     //deactivate play buttons until start buttons
-    $(".rpsls").attr("disabled", true);
+    disableButons();
 }
 
 
-// Whenever a user clicks the register button
-$("#register").on("click", function(event) {
-    // Prevent form from submitting
-    event.preventDefault();
-
-    registeredName = $("#register-name").val();
-    $("#register-name").val("");
-
-    firebase.auth().signInAnonymously().catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorMessage);
-
-    });
-    //this action triggers our player validation check...
-    database.ref("players").child(userId).child('lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
-});
+function disableButons() {
+    //deactivate play buttons until start buttons
+    $(".rpsls").attr("disabled", true);
+}
 
 //Validate new or existing users
 firebase.auth().onAuthStateChanged(function(user) {
@@ -87,20 +73,38 @@ firebase.auth().onAuthStateChanged(function(user) {
 // var playerCount = 0;
 // push "child added"
 
+// Whenever a user clicks the register button
+$("#register").on("click", function(event) {
+    // Prevent form from submitting
+    event.preventDefault();
+
+    registeredName = $("#register-name").val();
+    $("#register-name").val("");
+
+    firebase.auth().signInAnonymously().catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorMessage);
+
+    });
+    //this action triggers our player validation check...
+    database.ref("players").child(userId).child('lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
+});
+
 var gameRef = database.ref("game");
 
 // var playerJoins = gameRef.child("join");
 // playerJoins.child("player-count").set(0);
 
-
-console.log(userId + "played");
+// console.log(userId + "played");
 
 gameRef.on('value', function(snapshot) {
-    // Player joins game
     if (!snapshot.exists()) {
         return;
     }
 
+    // Score player moves
     var p1, p2;
     var p1Choice, p2Choice;
     var p1wins, p2wins;
@@ -128,9 +132,10 @@ gameRef.on('value', function(snapshot) {
             p2wins = 0
         }
     }
-    if (typeof p1Choice != "undefined") {
-        console.log(p1Choice)
-        console.log(p2Choice)
+
+    if (typeof p1Choice != "undefined" && typeof p2Choice != "undefined") {
+        // console.log(p1Choice)
+        // console.log(p2Choice)
         if (p1Choice === p2Choice) {
             $("#action").text("Tie!  Play again...");
         }
@@ -169,6 +174,8 @@ gameRef.on('value', function(snapshot) {
         gameRef.child("playerTwo").child("choice").remove();
         gameRef.child("playerOne").child("wins").set(p1wins);
         gameRef.child("playerTwo").child("wins").set(p2wins);
+        //activate buttons
+        $(".rpsls").attr("disabled", null);
 
     }
 });
@@ -243,7 +250,9 @@ $("#start").on("click", function(event) {
 
 
 $(".rpsls").on("click", function(event) {
+    disableButons();
     event.preventDefault();
+    // disabe players buttons until both have played
 
     // console.log(playerID + " playeD");
     // $(this).val:
