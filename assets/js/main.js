@@ -110,32 +110,38 @@ gameRef.on('value', function(snapshot) {
     var p1wins, p2wins;
 
     if (snapshot.hasChild("playerOne")) {
+        // debugger;
         p1 = snapshot.child("playerOne");
         if (p1.hasChild("choice")) {
             p1Choice = p1.child("choice").val();
         }
         if (p1.hasChild("wins")) {
             p1wins = p1.child("wins").val();
-        } else {
-            p1wins = 0
+            // } else {
+            //     p1wins = 0
         }
     }
 
     if (snapshot.hasChild("playerTwo")) {
+        // debugger;
         p2 = snapshot.child("playerTwo");
         if (p2.hasChild("choice")) {
             p2Choice = p2.child("choice").val();
         }
         if (p2.hasChild("wins")) {
             p2wins = p2.child("wins").val();
-        } else {
-            p2wins = 0
+            // } else {
+            //     p2wins = 0
         }
     }
 
     if (typeof p1Choice != "undefined" && typeof p2Choice != "undefined") {
         // console.log(p1Choice)
         // console.log(p2Choice)
+        // clear the players choices so we don't trigger a loops
+        gameRef.child("playerOne").child("choice").remove();
+        gameRef.child("playerTwo").child("choice").remove();
+
         if (p1Choice === p2Choice) {
             $("#action").text("Tie!  Play again...");
         }
@@ -170,14 +176,16 @@ gameRef.on('value', function(snapshot) {
             $("#action").text("Paper beats Rock... Player 2 wins");
             p2wins += 1;
         }
-        gameRef.child("playerOne").child("choice").remove();
-        gameRef.child("playerTwo").child("choice").remove();
-        gameRef.child("playerOne").child("wins").set(p1wins);
-        gameRef.child("playerTwo").child("wins").set(p2wins);
-        //activate buttons
+        console.log(p1wins)
+        console.log(p2wins)
+        gameRef.child("playerOne").update({ wins: p1wins });
+        gameRef.child("playerTwo").update({ wins: p2wins });
+
+        //re-activate buttons
         $(".rpsls").attr("disabled", null);
 
     }
+
 });
 
 gameRef.child("join").on('value', function(snapshot) {
@@ -220,8 +228,10 @@ gameRef.child("join").on('value', function(snapshot) {
                 }
             }
         }
+        var wins = 0
         gameRef.child(playerID).set({
-            userId
+            userId,
+            wins
         });
         console.log("Player joined");
         // console.log("Ready " + playerName);
@@ -264,12 +274,14 @@ $(".rpsls").on("click", function(event) {
     // console.log(userId);
     // console.log(playerID);
     // console.log($(this).val());
-    gameRef.child(playerID).set({
-        userId,
+    // gameRef.child(playerID).set({
+    //     userId,
 
-        choice: $(this).val()
+    //     choice: $(this).val()
 
-    });
+    // });
+    gameRef.child(playerID).update({ choice: $(this).val() });
+    // gameRef.child("playerTwo").child("wins").update(p2wins);
 
     // console.log(gameRef.child("plays").val());
     // gameRef.child(playerID).child("choice").set($(this).val());
